@@ -4,7 +4,7 @@ ENV DEBIAN_FRONTEND=noninteractive
 ENV WINEPREFIX=/config/.wine
 ENV DISPLAY=:1
 
-# 1. Aktifkan arsitektur i386 TERLEBIH DAHULU sebelum apt-get update
+# Aktifkan i386 dan install dependensi
 RUN dpkg --add-architecture i386 && \
     apt-get update && \
     apt-get install -y \
@@ -24,7 +24,9 @@ WORKDIR /config
 
 # Salin script pemula
 COPY start.sh /config/start.sh
-RUN chmod +x /config/start.sh
+
+# Perbaiki line endings (CRLF -> LF) dan berikan izin eksekusi
+RUN sed -i 's/\r$//' /config/start.sh && chmod +x /config/start.sh
 
 EXPOSE 8080
 
