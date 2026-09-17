@@ -4,20 +4,20 @@ ENV DEBIAN_FRONTEND=noninteractive
 ENV WINEPREFIX=/config/.wine
 ENV DISPLAY=:1
 
-# Install dependencies yang dibutuhkan (Wine, VNC, noVNC, XVFB, Curl)
-RUN apt-get update && apt-get install -y \
+# 1. Aktifkan arsitektur i386 TERLEBIH DAHULU sebelum apt-get update
+RUN dpkg --add-architecture i386 && \
+    apt-get update && \
+    apt-get install -y \
     xvfb \
     x11vnc \
     openbox \
-    wine64 \
+    wine \
     wine32 \
+    wine64 \
     novnc \
     websockify \
     curl \
     ca-certificates \
-    && dpkg --add-architecture i386 \
-    && apt-get update \
-    && apt-get install -y wine32 \
     && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /config
@@ -26,7 +26,6 @@ WORKDIR /config
 COPY start.sh /config/start.sh
 RUN chmod +x /config/start.sh
 
-# Port default untuk noVNC (Railway akan mengarahkan trafik ke port ini)
 EXPOSE 8080
 
 CMD ["/config/start.sh"]
