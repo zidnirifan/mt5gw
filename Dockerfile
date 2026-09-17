@@ -20,14 +20,14 @@ RUN dpkg --add-architecture i386 && \
     ca-certificates \
     && rm -rf /var/lib/apt/lists/*
 
+# Salin script pemula ke /usr/local/bin agar TIDAK tertimpa oleh Railway Volume
+COPY start.sh /usr/local/bin/start.sh
+
+# Konversi CRLF ke LF dan beri izin eksekusi
+RUN sed -i 's/\r$//' /usr/local/bin/start.sh && chmod +x /usr/local/bin/start.sh
+
 WORKDIR /config
-
-# Salin script pemula
-COPY start.sh /config/start.sh
-
-# Perbaiki line endings (CRLF -> LF) dan berikan izin eksekusi
-RUN sed -i 's/\r$//' /config/start.sh && chmod +x /config/start.sh
 
 EXPOSE 8080
 
-CMD ["/config/start.sh"]
+CMD ["/usr/local/bin/start.sh"]
